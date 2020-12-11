@@ -1,3 +1,5 @@
+// with help from https://dev.to/thibpat/solving-day-7-of-advent-of-code-2020-in-javascript-1ohh
+
 const fs = require('fs');
 let lines = fs.readFileSync('./input.txt', {encoding: 'utf8'}).split("\n").filter(x => x);
 let testLines = fs.readFileSync('./test_input.txt', {encoding: 'utf8'}).split("\n").filter(x => x);
