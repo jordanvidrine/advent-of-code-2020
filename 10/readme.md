@@ -1,0 +1,1 @@
+Needed help with part 2. Whew, thanks again *https://dev.to/thibpat/solving-day-10-of-advent-of-code-2020-in-javascript-5ajo*
