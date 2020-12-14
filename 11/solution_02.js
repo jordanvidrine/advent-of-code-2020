@@ -1,8 +1,166 @@
 const fs = require('fs');
 let lines = fs.readFileSync('./input.txt', {encoding: 'utf8'}).split("\n").filter(x => x);
 let testLines = fs.readFileSync('./test_input.txt', {encoding: 'utf8'}).split("\n").filter(x => x);
-let beforeArray = [...testLines];
+
+
+let beforeArray = [...lines];
 let afterArray = [];
+
+function right(x,y,array) {
+  if (x > array[0].length - 1) {
+    return false;
+  }
+
+  let seat = array[y].charAt(x+1);
+
+  if (seat === "L") {
+    return false;
+  } else if (seat === "#") {
+    return true;
+  } else {
+    return right(x+1,y,array)
+  }
+}
+
+function downRight(x,y,array) {
+  if (x+1 > array[0].length - 1) {
+    return false;
+  }
+
+  if (y+1 > array.length - 1) {
+    return false;
+  }
+
+  let seat = array[y+1].charAt(x+1);
+
+  if (seat === "L") {
+    return false;
+  } else if (seat === "#") {
+    return true;
+  } else {
+    return downRight(x+1,y+1,array)
+  }
+}
+
+// console.log(downRight(3,4,beforeArray))
+
+function down(x,y,array) {
+  if (y+1 > array.length - 1) {
+    return false;
+  }
+
+  let seat = array[y+1].charAt(x);
+
+  if (seat === "L") {
+    return false;
+  } else if (seat === "#") {
+    return true;
+  } else {
+    return down(x,y+1,array)
+  }
+}
+
+// console.log(down(3,4,beforeArray))
+
+function downLeft(x,y,array) {
+  if (x-1 < 0) {
+    return false;
+  }
+
+  if (y+1 > array.length - 1) {
+    return false;
+  }
+
+  let seat = array[y+1].charAt(x-1);
+
+  if (seat === "L") {
+    return false;
+  } else if (seat === "#") {
+    return true;
+  } else {
+    return downLeft(x-1,y+1,array)
+  }
+}
+
+// console.log(downLeft(3,4,beforeArray))
+
+function left(x,y,array) {
+  if (x-1 < 0) {
+    return false;
+  }
+
+  let seat = array[y].charAt(x-1);
+
+  if (seat === "L") {
+    return false;
+  } else if (seat === "#") {
+    return true;
+  } else {
+    return left(x-1,y,array)
+  }
+}
+
+// console.log(left(3,4,beforeArray))
+
+function upLeft(x,y,array) {
+  if (x-1 < 0) {
+    return false;
+  }
+
+  if (y-1 < 0) {
+    return false;
+  }
+
+  let seat = array[y-1].charAt(x-1);
+
+  if (seat === "L") {
+    return false;
+  } else if (seat === "#") {
+    return true;
+  } else {
+    return upLeft(x-1,y-1,array)
+  }
+}
+
+// console.log(upLeft(3,4,beforeArray))
+
+function up(x,y,array) {
+  if (y-1 < 0) {
+    return false;
+  }
+
+  let seat = array[y-1].charAt(x);
+
+  if (seat === "L") {
+    return false;
+  } else if (seat === "#") {
+    return true;
+  } else {
+    return up(x,y-1,array)
+  }
+}
+
+// console.log(up(3,4,beforeArray))
+
+function upRight(x,y,array) {
+  if (x+1 > array[0].length - 1) {
+    return false;
+  }
+
+  if (y-1 < 0) {
+    return false;
+  }
+
+  let seat = array[y-1].charAt(x+1);
+
+  if (seat === "L") {
+    return false;
+  } else if (seat === "#") {
+    return true;
+  } else {
+    return upRight(x+1,y-1,array)
+  }
+}
 
 let hasChanged = true;
 
@@ -10,8 +168,6 @@ while (hasChanged) {
 
   for (let y = 0; y < beforeArray.length; y++) {
     let line = beforeArray[y];
-
-    if (beforeArray[y] === "#.##.##.L#" && y == 0) debugger;
 
     for (let x = 0; x < line.length; x++) {
       let seat = line.charAt(x);
@@ -22,167 +178,56 @@ while (hasChanged) {
         // build seats array depending on where at in beforeArray
         if (beforeArray[y-1] === undefined) {
           //right
-          for (let xX = x+1; xX <= line.length - 1; xX++) {
-            let seat = beforeArray[y].charAt(xX);
-            if (seat !== "." && seat !== "") {
-              seat === "#" ? occupied++ : empty++
-              break;
-            }
-          }
+          if (right(x,y,beforeArray)) occupied++;
+
           //down-right
-          for (let yY = y+1; yY <= beforeArray.length - 1; yY++) {
-            let xX = x + (yY - y);
-            let seat = beforeArray[yY].charAt(xX);
-            if (seat !== "." && seat !== "") {
-                seat === "#" ? occupied++ : empty++;
-                break;
-            }
-          }
+          if (downRight(x,y,beforeArray)) occupied++;
+
           //down
-          for (let yY = y+1; yY <= beforeArray.length - 1; yY++) {
-            let seat = beforeArray[yY].charAt(x);
-            if (seat !== "." && seat !== "") {
-              seat === "#" ? occupied++ : empty++
-              break;
-            }
-          }
+          if (down(x,y,beforeArray)) occupied++;
+
           //down-left
-          for (let yY = y+1; yY <= beforeArray.length - 1; yY++) {
-            let xX = x - (yY - y);
-            let seat = beforeArray[yY].charAt(xX);
-            if (seat !== "." && seat !== "") {
-                seat === "#" ? occupied++ : empty++;
-                break;
-            }
-          }
+          if (downLeft(x,y,beforeArray)) occupied++;
+
           //left
-          for (let xX = x-1; xX <= line.length - 1; xX++) {
-            let seat = beforeArray[y].charAt(xX);
-            if (seat !== "." && seat !== "") {
-              seat === "#" ? occupied++ : empty++
-              break;
-            }
-          }
+          if (left(x,y,beforeArray)) occupied++;
+ 
         } else if (beforeArray[y-1] && beforeArray[y+1]) {
           // up
-          for (let yY = y-1; yY >= 0; yY--) {
-            let seat = beforeArray[yY].charAt(x);
-            if (seat !== "." && seat !== "") {
-              seat === "#" ? occupied++ : empty++
-              break;
-            }
-          }
+          if (up(x,y,beforeArray)) occupied++;
+
           //up-right
-          for (let yY = y-1; yY >= 0; yY--) {
-            let xX = x + (y - yY);
-            let seat = beforeArray[yY].charAt(xX);
-            if (seat !== "." && seat !== "") {
-                seat === "#" ? occupied++ : empty++;
-                break;
-            }
-          }
+          if (upRight(x,y,beforeArray)) occupied++;
+
           //right
-          for (let xX = x+1; xX <= line.length - 1; xX++) {
-            let seat = beforeArray[y].charAt(xX);
-            if (seat !== "." && seat !== "") {
-              seat === "#" ? occupied++ : empty++
-              break;
-            }
-          }
+          if (right(x,y,beforeArray)) occupied++;
+        
           //down-right
-          for (let yY = y+1; yY <= beforeArray.length - 1; yY++) {
-            let xX = x + (yY - y);
-            let seat = beforeArray[yY].charAt(xX);
-            if (seat !== "." && seat !== "") {
-                seat === "#" ? occupied++ : empty++;
-                break;
-            }
-          }
+          if (downRight(x,y,beforeArray)) occupied++;
+
           //down
-          for (let yY = y+1; yY <= beforeArray.lenth - 1; yY++) {
-            let seat = beforeArray[yY].charAt(x);
-            if (seat !== "." && seat !== "") {
-              seat === "#" ? occupied++ : empty++
-              break;
-            }
-          }
+          if (down(x,y,beforeArray)) occupied++;
+          
           //down-left
-          for (let yY = y+1; yY <= beforeArray.length - 1; yY++) {
-            let xX = x - (yY - y);
-            let seat = beforeArray[yY].charAt(xX);
-            if (seat !== "." && seat !== "") {
-                seat === "#" ? occupied++ : empty++;
-                break;
-            }
-          }
+          if (downLeft(x,y,beforeArray)) occupied++;
+
           //left
-          for (let xX = x-1; xX >= 0; xX--) {
-            let seat = beforeArray[y].charAt(xX);
-            if (seat !== "." && seat !== "") {
-              seat === "#" ? occupied++ : empty++
-              break;
-            }
-          }
+          if (left(x,y,beforeArray)) occupied++;
+
           //up-left
-          for (let yY = y-1; yY >= 0; yY--) {
-            let xX = x - (y - yY);
-            let seat = beforeArray[yY].charAt(xX);
-            if (seat !== "." && seat !== "") {
-                seat === "#" ? occupied++ : empty++;
-                break;
-            }
-          }
-          // up
-          for (let yY = y-1; yY >= 0; yY--) {
-            let seat = beforeArray[yY].charAt(x);
-            if (seat !== "." && seat !== "") {
-              seat === "#" ? occupied++ : empty++
-              break;
-            }
-          }
+          if (upLeft(x,y,beforeArray)) occupied++;
+
         } else {
           //left
-          for (let xX = x-1; xX >= 0; xX--) {
-            let seat = beforeArray[y].charAt(xX);
-            if (seat !== "." && seat !== "") {
-              seat === "#" ? occupied++ : empty++
-              break;
-            }
-          }
+          if (left(x,y,beforeArray)) occupied++;
           //up-left
-          for (let yY = y-1; yY >= 0; yY--) {
-            let xX = x - (y - yY);
-            let seat = beforeArray[yY].charAt(xX);
-            if (seat !== "." && seat !== "") {
-                seat === "#" ? occupied++ : empty++;
-                break;
-            }
-          }
+          if (upLeft(x,y,beforeArray)) occupied++;
           // up
-          for (let yY = y-1; yY >= 0; yY--) {
-            let seat = beforeArray[yY].charAt(x);
-            if (seat !== "." && seat !== "") {
-              seat === "#" ? occupied++ : empty++
-              break;
-            }
-          }
+          if (up(x,y,beforeArray)) occupied++;
           //up-right
-          for (let yY = y-1; yY >= 0; yY--) {
-            let xX = x + (y - yY);
-            let seat = beforeArray[yY].charAt(xX);
-            if (seat !== "." && seat !== "") {
-                seat === "#" ? occupied++ : empty++;
-                break;
-            }
-          }
+          if (upRight(x,y,beforeArray)) occupied++;
           //right
-          for (let xX = x+1; xX <= line.length - 1; xX++) {
-            let seat = beforeArray[y].charAt(xX);
-            if (seat !== "." && seat !== "") {
-              seat === "#" ? occupied++ : empty++
-              break;
-            }
-          }
+          if (right(x,y,beforeArray)) occupied++;
         }
   
         if (seat === "L" && occupied === 0) {
@@ -202,8 +247,8 @@ while (hasChanged) {
 
   if (before === after) {
     let occupiedSeats = [...after].filter(seat => seat === "#");
-    console.log(occupiedSeats.length)
     hasChanged = false;
+    console.log(occupiedSeats.length)
   } else {
     beforeArray = afterArray;
     afterArray = [];
