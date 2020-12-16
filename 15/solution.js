@@ -10,22 +10,20 @@ let nextNumber = null;
 
 input.forEach((number,idx) => {
     numbers[number] = {
-      lastTurnCalled: [idx+1],
+      lastTurnCalled: idx+1,
+      secondToLastTurnCalled: null,
     }
     lastNumberSpoken = number;
 })
 
-for (let turn = input.length+1; turn <= 2020; turn++) {
+for (let turn = input.length+1; turn <= 30000000; turn++) {
   let number = null;
 
   if (numbers.hasOwnProperty(lastNumberSpoken)) {
-    if (numbers[lastNumberSpoken].lastTurnCalled.length >= 2) {
-      let length = numbers[lastNumberSpoken].lastTurnCalled.length;
-      let previousTurnCalled = numbers[lastNumberSpoken].lastTurnCalled[length - 2];
-      let lastTurnCalled = numbers[lastNumberSpoken].lastTurnCalled[length - 1];
-      number = lastTurnCalled - previousTurnCalled;
+    if (numbers[lastNumberSpoken].secondToLastTurnCalled) {
+      number = numbers[lastNumberSpoken].lastTurnCalled - numbers[lastNumberSpoken].secondToLastTurnCalled;
     } else {
-      number = 0;
+      number = turn - 1 - numbers[lastNumberSpoken].lastTurnCalled;
     }
   } else {
       numbers[lastNumberSpoken] = {
@@ -36,7 +34,8 @@ for (let turn = input.length+1; turn <= 2020; turn++) {
   }
 
   if (numbers.hasOwnProperty(number)) {
-    numbers[number].lastTurnCalled = [...numbers[number].lastTurnCalled, turn];
+    numbers[number].secondToLastTurnCalled = numbers[number].lastTurnCalled;
+    numbers[number].lastTurnCalled = turn;
   }
 
   lastNumberSpoken = number;
