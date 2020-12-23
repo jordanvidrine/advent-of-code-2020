@@ -54,6 +54,8 @@ let player2 = `20
 let deckStorage = [];
 
 function recursiveCombat(player1Deck,player2Deck) {
+    // I switched to using a Set instead of an array after my solution was taking forever.
+    // that idea came from https://www.youtube.com/watch?v=FQvyr1l19Ow&ab_channel=thibpat
     const alreadyPlayed = new Set();
 
     while (player1Deck.length > 0 && player2Deck.length > 0) {
@@ -76,7 +78,7 @@ function recursiveCombat(player1Deck,player2Deck) {
             // recursive combat here.
             let newDeck1 = [...player1Deck.slice(0,card1)];
             let newDeck2 = [...player2Deck.slice(0,card2)];
-            let {winner, deck} = recursiveCombat(newDeck1,newDeck2);
+            let {winner} = recursiveCombat(newDeck1,newDeck2);
             player = winner;
         } else {
             player = card1 > card2 ? 1 : 2
