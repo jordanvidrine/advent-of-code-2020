@@ -1,6 +1,8 @@
 let cups = `158937462`.split('').map(x => Number(x))
 let SIZE = 1000000;
 
+// the idea to use a Linked List (circular) as well as a Dictionary to access that list came from
+// this Python solution https://www.youtube.com/watch?v=62chpxJA9pQ&ab_channel=JonathanPaulson
 class ListNode {
     constructor(data) {
         this.label = data
